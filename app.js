@@ -2,14 +2,40 @@ import express from 'express'
 
 const app = express();
 
-app.get('/sky/:id', (req, res, next) => {
-	// console.log(req.path);
-	// console.log(req.headers);
-	console.log(req.params);
-	console.log(req.params.id);
-	console.log(req.query);
-	console.log(req.query.keyword);
+app.all('/api', (req, res, next) => {
+	console.log('all');
+	next();
+})
 
-	res.send('hi!');
+app.use('/sky', (req, res, next) => {
+	console.log('use');
+	next();
+})
+
+app.get('/', (req, res, next) => {
+	console.log('first');
+	// next();
+	// next('route');
+	// next(new Error('error'));
+	if (true) {
+		return res.send('Hi');
+	}
+	res.send('hello');
+},
+(req, res, next) => {
+	console.log('first2');
+	next();
+})
+
+app.get('/', (req, res, next) => {
+	console.log('second');
+})
+
+app.use((req,res, next) => {
+	res.status(404).send('Not available@_@');
+})
+app.use((error, req, res, next) => {
+	console.log(error);
+	res.status(500).send('Sorry, try later!');
 })
 app.listen(8080);
